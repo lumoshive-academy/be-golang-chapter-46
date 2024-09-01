@@ -7,8 +7,6 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-var token *jwt.Token
-
 func main() {
 
 	secretKey := []byte("your-256-bit-secret")
