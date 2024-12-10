@@ -1,0 +1,157 @@
+basePath: /v1/api
+definitions:
+  helper.Response:
+    properties:
+      data: {}
+      message:
+        type: string
+      status:
+        type: boolean
+    type: object
+  model.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  model.Shipping:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      name:
+        example: Shipping A
+        type: string
+      price:
+        description: Sesuaikan skala decimal
+        example: 10000
+        type: number
+      updated_at:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: lumoshice.academy@gmail.com
+    name: lumoshive academy
+    url: https://shipping.com/
+  description: this is a shipping api
+  title: shipping API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login user
+      parameters:
+      - description: user data
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/model.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Login success
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "500":
+          description: server error
+          schema:
+            $ref: '#/definitions/helper.Response'
+      summary: Login user
+      tags:
+      - auth
+  /shipping:
+    get:
+      description: get all shipping
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            allOf:
+            - $ref: '#/definitions/helper.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Shipping'
+                  type: array
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "500":
+          description: server error
+          schema:
+            $ref: '#/definitions/helper.Response'
+      security:
+      - ApiKeyAuthToken: []
+      - ApiKeyAuthIDKey: []
+      summary: API Get all shipping
+      tags:
+      - shipping
+    post:
+      description: API create shipping
+      parameters:
+      - description: Token to be passed after login
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: ID Key to be passed after login
+        in: header
+        name: ID-KEY
+        required: true
+        type: string
+      - description: shipping data
+        in: body
+        name: shipping
+        required: true
+        schema:
+          $ref: '#/definitions/model.Shipping'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/helper.Response'
+        "500":
+          description: server error
+          schema:
+            $ref: '#/definitions/helper.Response'
+      summary: API created shipping
+      tags:
+      - shipping
+schemes:
+- http
+securityDefinitions:
+  ApiKeyAuthIDKey:
+    in: header
+    name: ID-KEY
+    type: apiKey
+  ApiKeyAuthToken:
+    in: header
+    name: token
+    type: apiKey
+swagger: "2.0"
